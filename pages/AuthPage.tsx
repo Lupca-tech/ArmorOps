@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Translation } from '../translations';
 import { auth } from '../services/firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+// Fix: Import firebase v9 compat to resolve module export errors for auth functions and types.
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import { Translation } from '../translations';
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
@@ -9,90 +11,149 @@ interface AuthPageProps {
 }
 
 const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setIsLoading(true);
+    setError(null);
+
+    if (!isLogin) {
+      if (password !== confirmPassword) {
+        setError(T.passwordMismatchError);
+        setIsLoading(false);
+        return;
+      }
+      // Password must be at least 8 characters, with one uppercase, one lowercase, and one special character.
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        setError(T.passwordComplexityError);
+        setIsLoading(false);
+        return;
+      }
+    }
 
     try {
-      if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
+      if (isLogin) {
+        // Fix: Use auth.signInWithEmailAndPassword from the compat library.
+        await auth.signInWithEmailAndPassword(email, password);
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        // Fix: Use auth.createUserWithEmailAndPassword from the compat library.
+        await auth.createUserWithEmailAndPassword(email, password);
       }
       onAuthSuccess();
-    } catch (err: any) {
-      setError(err.message || T.authError);
+    } catch (err) {
+      // Fix: Use firebase.auth.AuthError type from the compat library.
+      const authError = err as firebase.auth.AuthError;
+      // Simple error message handling
+      switch (authError.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+          setError('Invalid email or password.');
+          break;
+        case 'auth/email-already-in-use':
+          setError('An account with this email already exists.');
+          break;
+        case 'auth/weak-password':
+          setError(T.passwordComplexityError);
+          break;
+        default:
+          setError('An authentication error occurred. Please try again.');
+          break;
+      }
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-6 lg:px-8 py-12">
-      <div className="max-w-md mx-auto">
-        <div className="bg-gray-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-8">
-          <h1 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            {isSignUp ? T.signUp : T.login}
-          </h1>
+    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] animate-fade-in-up p-4">
+      <div className="w-full max-w-md p-8 space-y-6 bg-gray-900/50 backdrop-blur-sm rounded-xl shadow-lg border border-white/10">
+        <h2 className="text-2xl font-bold text-center text-cyan-400">
+          {isLogin ? T.login : T.signup}
+        </h2>
+        <form className="space-y-6" onSubmit={handleAuthAction}>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+              {T.emailLabel}
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 mt-1 text-white bg-gray-900 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/80 focus:border-cyan-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+              {T.passwordLabel}
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete={isLogin ? "current-password" : "new-password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 mt-1 text-white bg-gray-900 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/80 focus:border-cyan-500"
+            />
+          </div>
           
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm">
-              {error}
+           {!isLogin && (
+            <div>
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-300">
+                {T.confirmPasswordLabel}
+              </label>
+              <input
+                id="confirm-password"
+                name="confirm-password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-3 py-2 mt-1 text-white bg-gray-900 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/80 focus:border-cyan-500"
+              />
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                {T.emailLabel}
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                {T.passwordLabel}
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
-                required
-              />
-            </div>
 
+          {error && <p className="text-sm text-center text-red-400 bg-red-900/50 p-2 rounded-md border border-red-700">{error}</p>}
+
+          <div>
             <button
               type="submit"
-              disabled={loading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 disabled:bg-gray-500 disabled:cursor-not-allowed transition-all transform hover:scale-105"
             >
-              {loading ? T.loading : (isSignUp ? T.signUp : T.login)}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm"
-            >
-              {isSignUp ? T.alreadyHaveAccount : T.needAccount}
+              {isLoading ? (isLogin ? T.loggingIn : T.signingUp) : (isLogin ? T.login : T.signup)}
             </button>
           </div>
-        </div>
+        </form>
+        <p className="text-sm text-center text-gray-400">
+          {isLogin ? T.loginPrompt : T.signupPrompt}{' '}
+          <button
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError(null);
+              setPassword('');
+              setConfirmPassword('');
+            }}
+            className="font-medium text-cyan-400 hover:text-cyan-300 focus:outline-none focus:underline"
+          >
+            {isLogin ? T.signup : T.login}
+          </button>
+        </p>
       </div>
     </div>
   );

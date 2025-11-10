@@ -1,16 +1,24 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+// Fix: Use firebase v9 compat library to resolve module export errors for initializeApp, getAuth, etc.
+import firebase from "firebase/compat/app";
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDH3vO8nYqF8vK6xH9ZnJ8L5tY3wP4xR2Q",
-  authDomain: "armorops-demo.firebaseapp.com",
-  projectId: "armorops-demo",
-  storageBucket: "armorops-demo.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abc123def456ghi789jkl"
+  apiKey: "AIzaSyD9gZIKroNlQCySWPnuQOybrdaHv2iZy5E",
+  authDomain: "armorops-aicheck.firebaseapp.com",
+  projectId: "armorops-aicheck",
+  storageBucket: "armorops-aicheck.firebasestorage.app",
+  messagingSenderId: "68675922203",
+  appId: "1:68675922203:web:4f6d32b9286a23bad00bbe",
+  measurementId: "G-T0TC7KHS22"
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// Export the instances to be used in other parts of the app
+export const auth = firebase.auth();
+export const db = firebase.firestore();
