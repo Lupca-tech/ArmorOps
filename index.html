@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArmorOps | Auto-Fix & PR Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "firebase/app": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js",
+    "firebase/": "https://aistudiocdn.com/firebase@^12.5.0/"
+  }
+}
+</script>
+<style>
+  :root {
+    --bg-color: #030712; /* gray-950 */
+    --bg-color-light: #111827; /* gray-900 */
+    --text-color: #f9fafb; /* gray-50 */
+    --accent-color: #22d3ee; /* cyan-400 */
+    --accent-color-dark: #0891b2; /* cyan-600 */
+    --border-color: rgba(255, 255, 255, 0.1);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow-x: hidden; /* Prevent horizontal scroll from glowing elements */
+  }
+
+  /* Dynamic Aurora Background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(800px circle at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(8, 145, 178, 0.15), transparent 40%);
+    z-index: -1;
+    pointer-events: none;
+    transition: background-position 0.3s ease-out;
+  }
+
+  .bg-grid-cyan-500\/10 {
+      background-image: linear-gradient(var(--accent-color) 1px, transparent 1px), linear-gradient(to right, var(--accent-color) 1px, var(--bg-color) 1px);
+      background-size: 3rem 3rem;
+      background-position: top center;
+      opacity: 0.1;
+  }
+  .animate__animated.animate__delay-05s {
+      animation-delay: 0.5s;
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-color);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #272E3F;
+    border-radius: 10px;
+    border: 2px solid var(--bg-color);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-color-dark);
+  }
+
+  /* Keyframe animations */
+  @keyframes pulse-shadow {
+    0%, 100% {
+        box-shadow: 0 0 20px 0px rgba(34, 211, 238, 0.3), 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+    50% {
+        box-shadow: 0 0 35px 10px rgba(34, 211, 238, 0.2), 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+  }
+
+  @keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+  
+  .animate-pulse-shadow {
+      animation: pulse-shadow 4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  .animate-fade-in-up {
+      animation: fade-in-up 0.6s ease-out forwards;
+  }
+</style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-950 text-gray-50">
+    <div id="root"></div>
+    <script>
+      document.body.addEventListener('mousemove', e => {
+        document.body.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.body.style.setProperty('--mouse-y', e.clientY + 'px');
+      });
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
