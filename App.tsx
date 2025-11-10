@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TRANSLATIONS, Language, Translation } from './translations';
 import { auth } from './services/firebase';
 // Fix: Use firebase v9 compat library to resolve module export errors.
@@ -22,6 +22,8 @@ const App: React.FC = () => {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
 
   useEffect(() => {
@@ -34,6 +36,18 @@ const App: React.FC = () => {
     });
     return () => unsubscribe();
   }, [activeTab]);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const T = TRANSLATIONS[lang];
 
@@ -96,7 +110,7 @@ const App: React.FC = () => {
       case 'about':
         return <AboutPage T={T} />;
       case 'autofix':
-        return <AutoFixAgentPage T={T}/>;
+        return <AutoFixAgentPage T={T} user={user} />;
       case 'auth':
         return <AuthPage onAuthSuccess={() => setActiveTab('analyzer')} T={T} />;
       default:
@@ -137,9 +151,30 @@ const App: React.FC = () => {
             </div>
             {isAuthReady && (
               user ? (
-                <button onClick={() => auth.signOut()} className="hidden md:block px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-all duration-300 transform hover:scale-105">
-                  {T.logout}
-                </button>
+                <div className="relative hidden md:block" ref={profileMenuRef}>
+                  <button onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)} className="flex items-center justify-center h-9 w-9 bg-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900">
+                    {user.photoURL ? (
+                      <img src={user.photoURL} alt="User avatar" className="h-full w-full rounded-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-semibold text-white">
+                        {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </button>
+                  {isProfileMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate__animated animate__fadeIn animate__faster" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
+                      <div className="py-1" role="none">
+                        <div className="px-4 py-2 border-b border-gray-700">
+                           <p className="text-sm text-gray-200" role="none">Signed in as</p>
+                           <p className="text-sm font-medium text-white truncate" role="none">{user.email}</p>
+                        </div>
+                        <button onClick={() => { auth.signOut(); setIsProfileMenuOpen(false); }} className="w-full text-left block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300" role="menuitem">
+                          {T.logout}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="hidden md:block">
                    <button
