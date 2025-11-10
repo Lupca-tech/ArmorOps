@@ -168,7 +168,6 @@ const RiskScoreGauge: React.FC<{ score: number, T: Translation }> = ({ score, T 
                     strokeDasharray={circumference}
                     strokeDashoffset={circumference}
                     strokeLinecap="round"
-                    // Fix: Corrected typo, was using undefined `strokeDashoffset` variable instead of `strokeOffset`
                     style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.25, 1, 0.5, 1)', strokeDashoffset: strokeOffset }}
                 />
             </svg>
@@ -292,9 +291,6 @@ const ScoringExplanation: React.FC<{ T: Translation }> = ({ T }) => {
                     <div className="flex flex-col space-y-2">
                         {scoreLevels.map(level => (
                             <div key={level.range} className={`flex justify-between items-center p-2 rounded-md ${level.color} border-l-4 ${level.borderColor}`}>
-                                {/* Fix: Cast the translation value to a string to resolve TypeScript error.
-The type inference is too broad and includes function types from the Translation object,
-but we know these specific keys point to string values. */}
                                 <span className={`font-bold ${level.textColor}`}>{T[level.labelKey as keyof Translation] as string}</span>
                                 <span className={`font-mono font-semibold text-white bg-black/20 px-2 py-0.5 rounded`}>{level.range}</span>
                             </div>
