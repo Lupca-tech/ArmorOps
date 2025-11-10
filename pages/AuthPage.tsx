@@ -70,6 +70,39 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
       setIsLoading(false);
     }
   };
+  
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      await auth.signInWithPopup(provider);
+      onAuthSuccess();
+    } catch (err) {
+      const authError = err as firebase.auth.AuthError;
+      console.error("Google Sign-In Error:", authError); // Add console logging for debugging
+      // Provide more specific user feedback
+      switch (authError.code) {
+        case 'auth/popup-closed-by-user':
+          setError('Sign-in cancelled. Please try again.');
+          break;
+        case 'auth/popup-blocked':
+          setError('Popup blocked by browser. Please allow popups for this site to sign in.');
+          break;
+        case 'auth/cancelled-popup-request':
+          setError('Sign-in cancelled. Please try again.');
+          break;
+        case 'auth/operation-not-supported-in-this-environment':
+          setError('Google Sign-In is not available in this environment. Please use email and password.');
+          break;
+        default:
+          setError('Failed to sign in with Google. Please try again.');
+          break;
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] animate-fade-in-up p-4">
@@ -136,10 +169,31 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
               disabled={isLoading}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 disabled:bg-gray-500 disabled:cursor-not-allowed transition-all transform hover:scale-105"
             >
-              {isLoading ? (isLogin ? T.loggingIn : T.signingUp) : (isLogin ? T.login : T.signup)}
+              {isLoading && !isLogin ? T.signingUp : isLoading && isLogin ? T.loggingIn : (isLogin ? T.login : T.signup)}
             </button>
           </div>
         </form>
+        
+        <div className="relative flex py-2 items-center">
+            <div className="flex-grow border-t border-gray-600"></div>
+            <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase">Or</span>
+            <div className="flex-grow border-t border-gray-600"></div>
+        </div>
+
+        <div>
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+              type="button"
+              className="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-200 bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg className="w-5 h-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 399.5 0 256S111.8 0 244 0c69.8 0 130.8 28.2 173.4 72.8l-65.4 64.2C337 94.6 295.6 71.8 244 71.8 156.4 71.8 82.3 145.1 82.3 233.2c0 88.2 74.1 161.4 161.7 161.4 97.4 0 142.1-64.8 147.4-95.9H244v-75.5h236.1c2.3 12.7 3.9 26.9 3.9 41.4z"></path>
+              </svg>
+              Sign {isLogin ? 'in' : 'up'} with Google
+            </button>
+        </div>
+        
         <p className="text-sm text-center text-gray-400">
           {isLogin ? T.loginPrompt : T.signupPrompt}{' '}
           <button

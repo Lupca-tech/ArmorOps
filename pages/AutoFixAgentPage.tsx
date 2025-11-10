@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Translation } from '../translations';
+import { db } from '../services/firebase';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 interface AutoFixAgentPageProps {
   T: Translation;
+  user: firebase.User | null;
 }
 
 // Icons for features
@@ -99,17 +103,35 @@ const HeroVisual: React.FC<{T: Translation}> = ({T}) => (
   </svg>
 );
 
-const AutoFixAgentPage: React.FC<AutoFixAgentPageProps> = ({ T }) => {
+const AutoFixAgentPage: React.FC<AutoFixAgentPageProps> = ({ T, user }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [title, setTitle] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // In a real app, you'd send this data to a server
-        console.log({ name, email, title });
-        setSubmitted(true);
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            await db.collection('early_access_signups').add({
+                name,
+                email,
+                title,
+                userId: user ? user.uid : 'anonymous',
+                userEmail: user ? user.email : 'anonymous',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+            setSubmitted(true);
+        } catch (error) {
+            console.error("Error submitting early access form:", error);
+            setSubmitError(T.feedbackError); // Reusing generic error message
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -200,11 +222,15 @@ const AutoFixAgentPage: React.FC<AutoFixAgentPageProps> = ({ T }) => {
                                             aria-label={T.autoFixCtaFormTitle}
                                         />
                                     </div>
+                                    {submitError && (
+                                        <p className="text-sm text-center text-red-400 bg-red-900/50 p-2 rounded-md border border-red-700">{submitError}</p>
+                                    )}
                                     <button
                                         type="submit"
-                                        className="w-full py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 focus:ring-offset-gray-800 transition-transform transform hover:scale-105"
+                                        disabled={isSubmitting}
+                                        className="w-full py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 focus:ring-offset-gray-800 transition-transform transform hover:scale-105 disabled:bg-gray-500 disabled:cursor-not-allowed"
                                     >
-                                        {T.autoFixCtaFormButton}
+                                        {isSubmitting ? T.submittingFeedback : T.autoFixCtaFormButton}
                                     </button>
                                 </form>
                             </>

@@ -8,7 +8,6 @@ import { Language, Translation } from '../translations';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-// Fix: Corrected typo in function name from calculateTfidfVectors to calculateTfIdfVectors.
 import { ComplianceChunk, IndexedChunk, TfidfVectorizer, createTfidfVectorizer, calculateTfIdfVectors, retrieveContext } from '../services/ragData';
 import { db } from '../services/firebase';
 
@@ -237,7 +236,6 @@ const AnalyzerPage: React.FC<AnalyzerPageProps> = ({ T, lang, user, isAuthReady 
       return { indexedChunks: [], vectorizer: null };
     }
     const vectorizer = createTfidfVectorizer(complianceData);
-    // Fix: Corrected typo in function name from calculateTfidfVectors to calculateTfIdfVectors.
     const indexedChunks = calculateTfIdfVectors(complianceData, vectorizer);
     return { indexedChunks, vectorizer };
   }, [complianceData]);

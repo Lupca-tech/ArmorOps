@@ -189,7 +189,7 @@ const AdminPage: React.FC<AdminPageProps> = ({ T, lang, user }) => {
     return `${base} bg-transparent text-gray-400 hover:bg-gray-700/50`;
   };
 
-  const isNewRuleFormValid = Object.values(newRule).every(value => value.trim() !== '');
+  const isNewRuleFormValid = Object.values(newRule).every(value => (value as string).trim() !== '');
 
   return (
     <div className="container mx-auto p-4 lg:p-6">
