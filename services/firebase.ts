@@ -6,7 +6,7 @@ import 'firebase/compat/firestore';
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD9gZIKroNlQCySWPnuQOybrdaHv2iZy5E",
-  authDomain: "armorops-aicheck.firebaseapp.com",
+  authDomain: "armorops.tech",
   projectId: "armorops-aicheck",
   storageBucket: "armorops-aicheck.firebasestorage.app",
   messagingSenderId: "68675922203",

@@ -1,0 +1,45 @@
+# This GitHub Actions workflow will lint, type-check, and build the source code.
+# It's triggered on push or pull request events for the "main" branch.
+
+name: Lint, Type-Check, and Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      # NOTE: These steps assume you have the corresponding scripts in your package.json.
+      # If your project isn't set up with these, you'll need to add them.
+      # Example package.json scripts:
+      # "scripts": {
+      #   "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+      #   "type-check": "tsc --noEmit",
+      #   "build": "vite build"
+      # }
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run TypeScript type check
+        run: npm run type-check
+
+      - name: Build project
+        run: npm run build
