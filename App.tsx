@@ -29,7 +29,17 @@ const App: React.FC = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      setActiveTab(hash || 'home');
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // Initial load
 
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
   useEffect(() => {
     // Scroll to top whenever the active tab changes to simulate page navigation
     window.scrollTo(0, 0);
