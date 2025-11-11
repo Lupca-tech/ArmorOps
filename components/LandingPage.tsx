@@ -181,6 +181,25 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
             </div>
         </div>
       </section>
+
+       {/* Final CTA Section */}
+      <section className="relative text-center py-20 px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-cyan-500/10 [mask-image:radial-gradient(ellipse_at_center,transparent_40%,black)]"></div>
+        <div className="container mx-auto relative z-10">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 animate__animated animate__fadeInUp [text-wrap:balance]">
+            {T.finalCtaTitle}
+          </h2>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 animate__animated animate__fadeInUp animate__delay-05s [text-wrap:balance]">
+            {T.finalCtaDesc}
+          </p>
+          <button
+            onClick={onNavigate}
+            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow"
+          >
+            {T.finalCtaButton}
+          </button>
+        </div>
+      </section>
     </div>
   );
 };

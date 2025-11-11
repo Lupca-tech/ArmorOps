@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { TRANSLATIONS, Language, Translation } from './translations';
-import { auth } from './services/firebase';
+import { auth, db } from './services/firebase';
 // Fix: Use firebase v9 compat library to resolve module export errors.
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 // Import Pages
 import LandingPage from './components/LandingPage';
@@ -13,8 +15,9 @@ import AdminPage from './pages/AdminPage';
 import AboutPage from './pages/AboutPage';
 import AuthPage from './pages/AuthPage';
 import AutoFixAgentPage from './pages/AutoFixAgentPage';
+import AccountPage from './pages/AccountPage';
 
-type Tab = 'home' | 'analyzer' | 'rules' | 'admin' | 'about' | 'auth' | 'autofix';
+type Tab = 'home' | 'analyzer' | 'rules' | 'admin' | 'about' | 'auth' | 'autofix' | 'account-overview' | 'account-activity' | 'account-settings';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('vi');
@@ -32,10 +35,42 @@ const App: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
+    const logUserActivity = async (currentUser: firebase.User) => {
+        if (!currentUser) return;
+
+        // Check for a flag in session storage to prevent logging on every refresh
+        const hasLoggedInThisSession = sessionStorage.getItem('hasLoggedIn');
+        if (hasLoggedInThisSession) return;
+
+        const providerId = currentUser.providerData[0]?.providerId || 'password';
+        let loginType = 'logged in with email';
+        if (providerId === 'google.com') {
+            loginType = 'logged in via Google';
+        }
+
+        try {
+            await db.collection(`users/${currentUser.uid}/activityLog`).add({
+                type: loginType,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                userAgent: navigator.userAgent
+            });
+            // Set flag to avoid re-logging
+            sessionStorage.setItem('hasLoggedIn', 'true');
+        } catch (error) {
+            console.error("Failed to log user activity:", error);
+        }
+    };
+
     const unsubscribe = auth.onAuthStateChanged(currentUser => {
       setUser(currentUser);
       setIsAuthReady(true);
-      if (!currentUser && (activeTab === 'admin')) {
+      if (currentUser) {
+          logUserActivity(currentUser);
+      } else {
+          // Clear the session flag on logout
+          sessionStorage.removeItem('hasLoggedIn');
+      }
+      if (!currentUser && (activeTab === 'admin' || activeTab.startsWith('account-'))) {
         setActiveTab('home');
       }
     });
@@ -58,7 +93,8 @@ const App: React.FC = () => {
 
   const handleNavigate = (tab: Tab) => {
     setIsMobileMenuOpen(false); // Close mobile menu on navigation
-    if (tab === 'admin' && !user) {
+    setIsProfileMenuOpen(false);
+    if ((tab === 'admin' || tab.startsWith('account-')) && !user) {
       setActiveTab('auth');
     } else {
       setActiveTab(tab);
@@ -103,6 +139,10 @@ const App: React.FC = () => {
 
 
   const renderPage = () => {
+    if (activeTab.startsWith('account-') && user) {
+        return <AccountPage T={T} user={user} activeTab={activeTab as any} onNavigate={handleNavigate} />;
+    }
+    
     switch (activeTab) {
       case 'home':
         return <LandingPage onNavigate={() => handleNavigate('analyzer')} T={T} />;
@@ -123,9 +163,11 @@ const App: React.FC = () => {
     }
   };
 
+  const isAccountPage = activeTab.startsWith('account-');
+
   return (
-    <div className="bg-gray-950 text-gray-50 min-h-screen font-sans flex flex-col">
-      <header className="bg-gray-950/70 backdrop-blur-lg sticky top-0 z-40 border-b border-white/10 shadow-lg shadow-black/10">
+    <div className={`${isAccountPage ? 'bg-black' : 'bg-gray-950'} text-gray-50 min-h-screen font-sans flex flex-col`}>
+      <header className={`${isAccountPage ? 'bg-black/80' : 'bg-gray-950/70'} backdrop-blur-lg sticky top-0 z-40 border-b ${isAccountPage ? 'border-gray-800' : 'border-white/10'} shadow-lg shadow-black/10`}>
         <nav className="container mx-auto px-4 lg:px-6 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavigate('home')}>
             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" alt="ArmorOps Logo" className="h-9 w-auto" />
@@ -173,6 +215,16 @@ const App: React.FC = () => {
                            <p className="text-sm text-gray-200" role="none">Signed in as</p>
                            <p className="text-sm font-medium text-white truncate" role="none">{user.email}</p>
                         </div>
+                        <button onClick={() => handleNavigate('account-overview')} className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700" role="menuitem">
+                          Overview
+                        </button>
+                         <button onClick={() => handleNavigate('account-activity')} className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700" role="menuitem">
+                          Activity
+                        </button>
+                         <button onClick={() => handleNavigate('account-settings')} className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700" role="menuitem">
+                          Settings
+                        </button>
+                        <div className="border-t border-gray-700 my-1"></div>
                         <button onClick={() => { auth.signOut(); setIsProfileMenuOpen(false); }} className="w-full text-left block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300" role="menuitem">
                           {T.logout}
                         </button>
@@ -224,9 +276,15 @@ const App: React.FC = () => {
                     <div className="border-t border-gray-700 my-2"></div>
                      {isAuthReady && (
                         user ? (
-                          <button onClick={() => { auth.signOut(); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-gray-700 hover:text-white">
-                            {T.logout}
-                          </button>
+                          <>
+                            <MobileNavButton tab="account-overview" T={'Overview'} />
+                            <MobileNavButton tab="account-activity" T={'Activity'} />
+                            <MobileNavButton tab="account-settings" T={'Settings'} />
+                            <div className="border-t border-gray-700 my-2"></div>
+                            <button onClick={() => { auth.signOut(); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-gray-700 hover:text-white">
+                              {T.logout}
+                            </button>
+                          </>
                         ) : (
                            <MobileNavButton tab="auth" T={T.login} />
                         )
@@ -238,6 +296,7 @@ const App: React.FC = () => {
       <main className="flex-grow">
         {renderPage()}
       </main>
+      {!isAccountPage && (
        <footer className="bg-gray-950/50 py-12 mt-20 border-t border-white/10">
         <div className="container mx-auto px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
@@ -329,6 +388,7 @@ const App: React.FC = () => {
             </div>
         </div>
       </footer>
+      )}
     </div>
   );
 };

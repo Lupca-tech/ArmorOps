@@ -35,6 +35,9 @@ export const TRANSLATIONS = {
     why2Desc: "Hợp nhất các công cụ bảo mật và loại bỏ sự phân mảnh. Phân tích do AI điều khiển và tự động sửa lỗi của chúng tôi hoạt động như một công cụ nhân rộng sức mạnh cho đội ngũ kỹ sư, cắt giảm chi phí và độ phức tạp.",
     why3Title: "Trao quyền cho Nhà phát triển",
     why3Desc: "Dịch chuyển bảo mật sang trái mà không tạo gánh nặng cho nhà phát triển. Cung cấp phản hồi rõ ràng, nhận biết ngữ cảnh và các pull request tự động, biến bảo mật từ một rào cản thành một phần liền mạch trong quy trình làm việc của họ.",
+    finalCtaTitle: "Củng cố Mã của Bạn. Triển khai với Tự tin.",
+    finalCtaDesc: "Ngừng đuổi theo lỗ hổng. Bắt đầu phát hành mã an toàn nhanh hơn. Nhận phân tích bảo mật miễn phí, nhận biết ngữ cảnh trong vài giây.",
+    finalCtaButton: "Bắt đầu Phân tích Miễn phí",
     footerText: "Mọi quyền được bảo lưu.",
     // Footer
     footerIntro: "ArmorOps biến DevSecOps từ gánh nặng thành lợi thế chiến lược, cho phép các startup và SME mở rộng quy mô một cách an toàn và tự tin.",
@@ -373,6 +376,9 @@ export const TRANSLATIONS = {
     why2Desc: "Consolidate your security stack and eliminate tool sprawl. Our AI-driven analysis and auto-remediation act as a force multiplier for your engineering team, cutting costs and complexity.",
     why3Title: "Empower Your Developers",
     why3Desc: "Shift security left without burdening developers. Provide clear, context-aware feedback and automated pull requests, transforming security from a roadblock into a seamless part of their workflow.",
+    finalCtaTitle: "Fortify Your Code. Deploy with Confidence.",
+    finalCtaDesc: "Stop chasing vulnerabilities. Start shipping secure code faster. Get your free, context-aware security analysis in seconds.",
+    finalCtaButton: "Start Free Analysis",
     footerText: "All rights reserved.",
      // Footer
     footerIntro: "ArmorOps transforms DevSecOps from a burden into a strategic advantage, enabling startups and SMEs to scale securely and with confidence.",
