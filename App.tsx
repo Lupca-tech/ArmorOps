@@ -27,6 +27,11 @@ const App: React.FC = () => {
 
 
   useEffect(() => {
+    // Scroll to top whenever the active tab changes to simulate page navigation
+    window.scrollTo(0, 0);
+  }, [activeTab]);
+
+  useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(currentUser => {
       setUser(currentUser);
       setIsAuthReady(true);
@@ -122,7 +127,7 @@ const App: React.FC = () => {
     <div className="bg-gray-950 text-gray-50 min-h-screen font-sans flex flex-col">
       <header className="bg-gray-950/70 backdrop-blur-lg sticky top-0 z-40 border-b border-white/10 shadow-lg shadow-black/10">
         <nav className="container mx-auto px-4 lg:px-6 py-3 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavigate('home')}>
             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" alt="ArmorOps Logo" className="h-9 w-auto" />
             <span className="text-xl font-bold text-white tracking-wide">{T.appName}</span>
           </div>
