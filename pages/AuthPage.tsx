@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { auth } from '../services/firebase';
 // Fix: Import firebase v9 compat to resolve module export errors for auth functions and types.
 import firebase from 'firebase/compat/app';
@@ -17,6 +17,119 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particlesArray: Particle[] = [];
+
+    class Particle {
+      x: number;
+      y: number;
+      directionX: number;
+      directionY: number;
+      size: number;
+      speed: number;
+
+      constructor(x: number, y: number, directionX: number, directionY: number, size: number) {
+        this.x = x;
+        this.y = y;
+        this.directionX = directionX;
+        this.directionY = directionY;
+        this.size = size;
+        this.speed = 0.1 + Math.random() * 0.3; // Slower speed
+      }
+
+      draw() {
+        if (!ctx) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.7)'; // cyan-400 with opacity
+        ctx.fill();
+      }
+
+      update() {
+        if (this.x > canvas.width || this.x < 0) {
+          this.directionX = -this.directionX;
+        }
+        if (this.y > canvas.height || this.y < 0) {
+          this.directionY = -this.directionY;
+        }
+        this.x += this.directionX * this.speed;
+        this.y += this.directionY * this.speed;
+        this.draw();
+      }
+    }
+
+    const init = () => {
+      particlesArray = [];
+      const numberOfParticles = (canvas.height * canvas.width) / 10000;
+      for (let i = 0; i < numberOfParticles; i++) {
+        const size = Math.random() * 1.5 + 1;
+        const x = Math.random() * (canvas.width - size * 2) + size;
+        const y = Math.random() * (canvas.height - size * 2) + size;
+        const directionX = (Math.random() * 2) - 1;
+        const directionY = (Math.random() * 2) - 1;
+        particlesArray.push(new Particle(x, y, directionX, directionY, size));
+      }
+    };
+
+    const connect = () => {
+      if (!ctx) return;
+      let opacityValue = 1;
+      const connectDistance = 130;
+      for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a + 1; b < particlesArray.length; b++) {
+          const distance = Math.sqrt(
+            Math.pow(particlesArray[a].x - particlesArray[b].x, 2) +
+            Math.pow(particlesArray[a].y - particlesArray[b].y, 2)
+          );
+          if (distance < connectDistance) {
+            opacityValue = 1 - (distance / connectDistance);
+            ctx.strokeStyle = `rgba(207, 250, 254, ${opacityValue * 0.5})`; // light cyan with opacity
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    };
+
+    const animate = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const particle of particlesArray) {
+        particle.update();
+      }
+      connect();
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const handleResize = () => {
+      if (!canvas) return;
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      init();
+    };
+    
+    // Initial setup
+    handleResize();
+    animate();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,8 +218,9 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] animate-fade-in-up p-4">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-900/50 backdrop-blur-sm rounded-xl shadow-lg border border-white/10">
+    <div className="relative flex items-center justify-center min-h-[calc(100vh-200px)] animate-fade-in-up p-4 overflow-hidden">
+      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
+      <div className="relative z-10 w-full max-w-md p-8 space-y-6 bg-gray-900/80 backdrop-blur-md rounded-xl shadow-2xl border border-white/10">
         <h2 className="text-2xl font-bold text-center text-cyan-400">
           {isLogin ? T.login : T.signup}
         </h2>

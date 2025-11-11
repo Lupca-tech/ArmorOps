@@ -241,7 +241,8 @@ const AdminPage: React.FC<AdminPageProps> = ({ T, lang, user }) => {
                                 <p className={`text-sm ${saveStatus.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>{saveStatus.message}</p>
                               )}
                               <button type="submit" disabled={!isNewRuleFormValid || isSavingNewRule} className="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors">
-                                {isSavingNewRule ? T.saving : T.saveRule}
+                                {/* Fix: Use renamed translation key T.savingRule */}
+                                {isSavingNewRule ? T.savingRule : T.saveRule}
                               </button>
                           </div>
                      </form>
@@ -288,7 +289,8 @@ const AdminPage: React.FC<AdminPageProps> = ({ T, lang, user }) => {
                     {T.cancel}
                 </button>
                 <button onClick={handleSaveEdit} disabled={isUpdating} className="px-4 py-2 text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-800 disabled:bg-gray-500 disabled:cursor-not-allowed">
-                    {isUpdating ? T.saving : T.saveChanges}
+                    {/* Fix: Use renamed translation key T.savingRule */}
+                    {isUpdating ? T.savingRule : T.saveChanges}
                 </button>
             </footer>
           </div>

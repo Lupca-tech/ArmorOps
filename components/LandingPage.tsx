@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Translation } from '../translations';
 
 interface LandingPageProps {
@@ -29,15 +29,147 @@ const HowItWorksStep: React.FC<{ num: string, title: string, children: React.Rea
 );
 
 const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particlesArray: Particle[] = [];
+    const mouse = { x: null as number | null, y: null as number | null, radius: 100 };
+
+    window.addEventListener('mousemove', (event) => {
+      mouse.x = event.x;
+      mouse.y = event.y;
+    });
+     window.addEventListener('mouseout', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    class Particle {
+      x: number;
+      y: number;
+      directionX: number;
+      directionY: number;
+      size: number;
+      speed: number;
+
+      constructor(x: number, y: number, directionX: number, directionY: number, size: number) {
+        this.x = x;
+        this.y = y;
+        this.directionX = directionX;
+        this.directionY = directionY;
+        this.size = size;
+        this.speed = 0.05 + Math.random() * 0.2;
+      }
+
+      draw() {
+        if (!ctx) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.5)'; // cyan-400 with opacity
+        ctx.fill();
+      }
+
+      update() {
+        if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+        if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+        
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouse.radius) {
+            this.x -= dx / distance * 2;
+            this.y -= dy / distance * 2;
+          }
+        }
+
+        this.x += this.directionX * this.speed;
+        this.y += this.directionY * this.speed;
+        this.draw();
+      }
+    }
+
+    const init = () => {
+      particlesArray = [];
+      const numberOfParticles = (canvas.height * canvas.width) / 9000;
+      for (let i = 0; i < numberOfParticles; i++) {
+        const size = Math.random() * 1.5 + 0.5;
+        const x = Math.random() * (canvas.width - size * 2) + size;
+        const y = Math.random() * (canvas.height - size * 2) + size;
+        const directionX = (Math.random() * 2) - 1;
+        const directionY = (Math.random() * 2) - 1;
+        particlesArray.push(new Particle(x, y, directionX, directionY, size));
+      }
+    };
+
+    const connect = () => {
+      if (!ctx) return;
+      const connectDistance = 120;
+      for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a + 1; b < particlesArray.length; b++) {
+          const distance = Math.sqrt(
+            Math.pow(particlesArray[a].x - particlesArray[b].x, 2) +
+            Math.pow(particlesArray[a].y - particlesArray[b].y, 2)
+          );
+          if (distance < connectDistance) {
+            const opacityValue = 1 - (distance / connectDistance);
+            ctx.strokeStyle = `rgba(207, 250, 254, ${opacityValue * 0.3})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    };
+
+    const animate = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const particle of particlesArray) {
+        particle.update();
+      }
+      connect();
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const handleResize = () => {
+      if (!canvas) return;
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      init();
+    };
+    
+    handleResize();
+    animate();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', (event) => { mouse.x = event.x; mouse.y = event.y; });
+      window.removeEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+
   return (
     <div className="overflow-x-clip">
       {/* Hero Section */}
-      <section className="relative text-center py-24 md:py-32 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-cyan-500/10 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+      <section className="relative text-center py-24 md:py-32 px-4 overflow-hidden h-screen flex flex-col justify-center items-center">
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-0"></canvas>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-950/0 via-gray-950/50 to-gray-950"></div>
         <div className="container mx-auto relative z-10">
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight animate__animated animate__fadeInDown [text-wrap:balance]">
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text" style={{filter: `drop-shadow(0 0 15px rgba(34, 211, 238, 0.5))`}}>
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text" style={{filter: `drop-shadow(0 0 25px rgba(34, 211, 238, 0.6))`}}>
               {T.appName}
             </span>
           </h1>
@@ -46,7 +178,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
           </p>
           <button
             onClick={onNavigate}
-            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow"
+            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow shine-effect"
           >
             {T.landingCTA}
           </button>
@@ -194,7 +326,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
           </p>
           <button
             onClick={onNavigate}
-            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow"
+            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow shine-effect"
           >
             {T.finalCtaButton}
           </button>

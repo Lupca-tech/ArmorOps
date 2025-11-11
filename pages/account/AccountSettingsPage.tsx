@@ -31,7 +31,7 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
             setTimeout(() => setSaveStatus('idle'), 3000);
         } catch (err) {
             console.error("Error updating profile:", err);
-            setError("Failed to update profile. Please try again.");
+            setError(T.saveError);
             setSaveStatus('error');
         } finally {
             setIsSaving(false);
@@ -40,11 +40,11 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
 
     return (
         <div className="space-y-10 animate-fade-in">
-            <h2 className="text-2xl font-bold text-white">Account Settings</h2>
+            <h2 className="text-2xl font-bold text-white">{T.accountSettingsTitle}</h2>
             
             {/* Avatar Section */}
             <section className="p-6 bg-gray-950 rounded-lg border border-gray-800">
-                <h3 className="text-lg font-semibold mb-4 border-b border-gray-800 pb-3">Avatar</h3>
+                <h3 className="text-lg font-semibold mb-4 border-b border-gray-800 pb-3">{T.avatar}</h3>
                 <div className="flex items-start gap-6">
                     <div className="flex-shrink-0">
                          {user.photoURL ? (
@@ -56,9 +56,9 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
                         )}
                     </div>
                     <div className="text-sm">
-                        <p className="text-gray-300">This is your avatar.</p>
-                        <p className="text-gray-400 mt-1">Click on the avatar to upload a custom one from your files.</p>
-                        <p className="text-gray-500 mt-2">An avatar is optional but strongly recommended.</p>
+                        <p className="text-gray-300">{T.avatarDesc}</p>
+                        <p className="text-gray-400 mt-1">{T.avatarUploadHint}</p>
+                        <p className="text-gray-500 mt-2">{T.avatarOptional}</p>
                     </div>
                 </div>
             </section>
@@ -68,8 +68,8 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
                 <section className="p-6 bg-gray-950 rounded-lg border border-gray-800">
                     <div className="md:flex md:justify-between md:items-start">
                          <div>
-                            <h3 className="text-lg font-semibold">Display Name</h3>
-                            <p className="text-sm text-gray-400 mt-1 max-w-md">Please use 32 characters at maximum.</p>
+                            <h3 className="text-lg font-semibold">{T.displayName}</h3>
+                            <p className="text-sm text-gray-400 mt-1 max-w-md">{T.displayNameHint}</p>
                         </div>
                         <input
                             type="text"
@@ -81,7 +81,7 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
                     </div>
                     <footer className="mt-4 pt-4 border-t border-gray-800 flex justify-between items-center">
                         <div className="text-sm text-gray-500 h-5">
-                            {saveStatus === 'success' && <span className="text-green-400 animate-fade-in">Successfully saved!</span>}
+                            {saveStatus === 'success' && <span className="text-green-400 animate-fade-in">{T.saveSuccess}</span>}
                             {saveStatus === 'error' && <span className="text-red-400">{error}</span>}
                         </div>
                         <button
@@ -89,7 +89,8 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
                             disabled={isSaving || displayName.trim() === (user.displayName || '').trim()}
                             className="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-black hover:bg-gray-200 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed"
                         >
-                           {isSaving ? 'Saving...' : 'Save'}
+                           {/* Fix: Use renamed translation key T.savingProfile */}
+                           {isSaving ? T.savingProfile : T.save}
                         </button>
                     </footer>
                 </section>
@@ -98,8 +99,8 @@ const AccountSettingsPage: React.FC<AccountSettingsPageProps> = ({ T, user }) =>
             <section className="p-6 bg-gray-950 rounded-lg border border-gray-800">
                 <div className="md:flex md:justify-between md:items-start">
                         <div>
-                        <h3 className="text-lg font-semibold">Email Address</h3>
-                        <p className="text-sm text-gray-400 mt-1 max-w-md">Your email address cannot be changed.</p>
+                        <h3 className="text-lg font-semibold">{T.emailAddress}</h3>
+                        <p className="text-sm text-gray-400 mt-1 max-w-md">{T.emailHint}</p>
                     </div>
                     <input
                         type="email"

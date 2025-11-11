@@ -165,12 +165,37 @@
     }
   }
   
+   @keyframes shine {
+    0% {
+      transform: translateX(-100%) skewX(-25deg);
+    }
+    100% {
+      transform: translateX(200%) skewX(-25deg);
+    }
+  }
+  
   .animate-pulse-shadow {
       animation: pulse-shadow 4s infinite cubic-bezier(0.4, 0, 0.6, 1);
   }
 
   .animate-fade-in-up {
       animation: fade-in-up 0.6s ease-out forwards;
+  }
+  
+  .shine-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .shine-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    animation: shine 5s infinite;
   }
 </style>
 <link rel="stylesheet" href="/index.css">

@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Translation } from '../../translations';
+import { Translation, Language } from '../../translations';
 import firebase from 'firebase/compat/app';
 import { db } from '../../services/firebase';
 
 interface AccountActivityPageProps {
     T: Translation;
     user: firebase.User;
+    lang: Language;
 }
 
 interface ActivityLog {
@@ -16,7 +17,7 @@ interface ActivityLog {
     userAgent: string;
 }
 
-const AccountActivityPage: React.FC<AccountActivityPageProps> = ({ T, user }) => {
+const AccountActivityPage: React.FC<AccountActivityPageProps> = ({ T, user, lang }) => {
     const [activities, setActivities] = useState<ActivityLog[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -38,7 +39,7 @@ const AccountActivityPage: React.FC<AccountActivityPageProps> = ({ T, user }) =>
 
     const groupActivitiesByDate = (logs: ActivityLog[]) => {
         return logs.reduce((acc, log) => {
-            const date = log.timestamp.toDate().toLocaleDateString(undefined, {
+            const date = log.timestamp.toDate().toLocaleDateString(lang, {
                 year: 'numeric',
                 month: 'long',
             });
@@ -51,16 +52,23 @@ const AccountActivityPage: React.FC<AccountActivityPageProps> = ({ T, user }) =>
     };
 
     const groupedActivities = groupActivitiesByDate(activities);
+    
+    const translateActivityType = (type: string) => {
+        if (type === 'logged in with email') return T.loggedInWithEmail;
+        if (type === 'logged in via Google') return T.loggedInViaGoogle;
+        return type;
+    };
+
 
     return (
         <div className="space-y-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-white">Account Activity</h2>
+            <h2 className="text-2xl font-bold text-white">{T.accountActivityTitle}</h2>
             
             <div className="bg-gray-950 rounded-lg border border-gray-800">
                 {isLoading ? (
-                     <div className="p-6 text-center text-gray-400">Loading activity...</div>
+                     <div className="p-6 text-center text-gray-400">{T.loadingActivity}</div>
                 ) : Object.keys(groupedActivities).length === 0 ? (
-                    <div className="p-6 text-center text-gray-400">No recent activity found.</div>
+                    <div className="p-6 text-center text-gray-400">{T.noActivityFound}</div>
                 ) : (
                     Object.entries(groupedActivities).map(([date, logs]) => (
                         <div key={date} className="p-6 border-b border-gray-800 last:border-b-0">
@@ -77,10 +85,10 @@ const AccountActivityPage: React.FC<AccountActivityPageProps> = ({ T, user }) =>
                                         )}
                                         <div className="text-sm">
                                             <p className="text-gray-200">
-                                                <span className="font-semibold">You</span> {log.type}
+                                                <span className="font-semibold">{T.you}</span> {translateActivityType(log.type)}
                                             </p>
                                             <p className="text-gray-500 text-xs">
-                                                {log.timestamp.toDate().toLocaleString()}
+                                                {log.timestamp.toDate().toLocaleString(lang)}
                                             </p>
                                         </div>
                                     </li>

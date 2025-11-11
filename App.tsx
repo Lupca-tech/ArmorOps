@@ -140,7 +140,7 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     if (activeTab.startsWith('account-') && user) {
-        return <AccountPage T={T} user={user} activeTab={activeTab as any} onNavigate={handleNavigate} />;
+        return <AccountPage T={T} lang={lang} user={user} activeTab={activeTab as any} onNavigate={handleNavigate} />;
     }
     
     switch (activeTab) {
@@ -212,17 +212,17 @@ const App: React.FC = () => {
                     <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate__animated animate__fadeIn animate__faster" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
                       <div className="py-1" role="none">
                         <div className="px-4 py-2 border-b border-gray-700">
-                           <p className="text-sm text-gray-200" role="none">Signed in as</p>
+                           <p className="text-sm text-gray-200" role="none">{T.signedInAs}</p>
                            <p className="text-sm font-medium text-white truncate" role="none">{user.email}</p>
                         </div>
                         <button onClick={() => handleNavigate('account-overview')} className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700" role="menuitem">
-                          Overview
+                          {T.accountOverview}
                         </button>
                          <button onClick={() => handleNavigate('account-activity')} className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700" role="menuitem">
-                          Activity
+                          {T.accountActivity}
                         </button>
                          <button onClick={() => handleNavigate('account-settings')} className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700" role="menuitem">
-                          Settings
+                          {T.accountSettings}
                         </button>
                         <div className="border-t border-gray-700 my-1"></div>
                         <button onClick={() => { auth.signOut(); setIsProfileMenuOpen(false); }} className="w-full text-left block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300" role="menuitem">
@@ -277,9 +277,9 @@ const App: React.FC = () => {
                      {isAuthReady && (
                         user ? (
                           <>
-                            <MobileNavButton tab="account-overview" T={'Overview'} />
-                            <MobileNavButton tab="account-activity" T={'Activity'} />
-                            <MobileNavButton tab="account-settings" T={'Settings'} />
+                            <MobileNavButton tab="account-overview" T={T.accountOverview} />
+                            <MobileNavButton tab="account-activity" T={T.accountActivity} />
+                            <MobileNavButton tab="account-settings" T={T.accountSettings} />
                             <div className="border-t border-gray-700 my-2"></div>
                             <button onClick={() => { auth.signOut(); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-gray-700 hover:text-white">
                               {T.logout}

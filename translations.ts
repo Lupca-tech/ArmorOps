@@ -11,6 +11,11 @@ export const TRANSLATIONS = {
     languageSelectorLabel: "Chọn ngôn ngữ",
     login: "Đăng nhập",
     logout: "Đăng xuất",
+    // Account Dropdown & Pages
+    accountOverview: "Tổng quan",
+    accountActivity: "Hoạt động",
+    accountSettings: "Cài đặt",
+    signedInAs: "Đăng nhập với tên",
     // LandingPage.tsx
     landingSubtitle: "TrustOps: An toàn. Đáng tin cậy. Mạnh mẽ.",
     landingCTA: "Bắt đầu Phân tích Ngay",
@@ -197,7 +202,8 @@ export const TRANSLATIONS = {
     confirmDeleteRule: "Bạn có chắc chắn muốn xóa quy tắc này không?",
     editRule: "Sửa quy tắc",
     saveChanges: "Lưu thay đổi",
-    saving: "Đang lưu...",
+    // Fix: Renamed to avoid duplicate key error.
+    savingRule: "Đang lưu...",
     addManuallyTab: "Thêm Thủ công",
     uploadFileTab: "Tải lên Tệp",
     manualFormTitle: "Thêm Quy tắc Tuân thủ Mới",
@@ -339,6 +345,38 @@ export const TRANSLATIONS = {
     feedbackSuccessMessage: "Phản hồi của bạn đã được gửi thành công.",
     feedbackError: "Không thể gửi phản hồi. Vui lòng thử lại.",
     close: "Đóng",
+    // AccountOverviewPage
+    accountOverviewTitle: "Tổng quan Tài khoản",
+    teams: "Nhóm",
+    teamsDesc: "Các nhóm được liên kết với tài khoản ArmorOps của bạn.",
+    searchTeamPlaceholder: "Tìm kiếm một nhóm...",
+    userProjects: (name: string) => `Các dự án của ${name}`,
+    hobby: "Cá nhân",
+    owner: "Chủ sở hữu",
+    domains: "Tên miền",
+    noDomainsFound: "Không tìm thấy tên miền nào.",
+    // AccountActivityPage
+    accountActivityTitle: "Hoạt động Tài khoản",
+    loadingActivity: "Đang tải hoạt động...",
+    noActivityFound: "Không tìm thấy hoạt động gần đây.",
+    you: "Bạn",
+    loggedInWithEmail: "đã đăng nhập bằng email",
+    loggedInViaGoogle: "đã đăng nhập qua Google",
+    // AccountSettingsPage
+    accountSettingsTitle: "Cài đặt Tài khoản",
+    avatar: "Ảnh đại diện",
+    avatarDesc: "Đây là ảnh đại diện của bạn.",
+    avatarUploadHint: "Nhấp vào ảnh đại diện để tải lên một ảnh tùy chỉnh từ tệp của bạn.",
+    avatarOptional: "Ảnh đại diện là tùy chọn nhưng được khuyến khích.",
+    displayName: "Tên hiển thị",
+    displayNameHint: "Vui lòng sử dụng tối đa 32 ký tự.",
+    saveSuccess: "Đã lưu thành công!",
+    saveError: "Không thể cập nhật hồ sơ. Vui lòng thử lại.",
+    // Fix: Renamed to avoid duplicate key error.
+    savingProfile: "Đang lưu...",
+    save: "Lưu",
+    emailAddress: "Địa chỉ Email",
+    emailHint: "Địa chỉ email của bạn không thể thay đổi.",
   },
   en: {
     // App.tsx
@@ -352,6 +390,11 @@ export const TRANSLATIONS = {
     languageSelectorLabel: "Select language",
     login: "Login",
     logout: "Logout",
+    // Account Dropdown & Pages
+    accountOverview: "Overview",
+    accountActivity: "Activity",
+    accountSettings: "Settings",
+    signedInAs: "Signed in as",
     // LandingPage.tsx
     landingSubtitle: "TrustOps: Secure. Reliable. Empowered.",
     landingCTA: "Start Analyzing Now",
@@ -538,7 +581,8 @@ export const TRANSLATIONS = {
     confirmDeleteRule: "Are you sure you want to delete this rule?",
     editRule: "Edit Rule",
     saveChanges: "Save Changes",
-    saving: "Saving...",
+    // Fix: Renamed to avoid duplicate key error.
+    savingRule: "Saving...",
     addManuallyTab: "Add Manually",
     uploadFileTab: "Upload File",
     manualFormTitle: "Add New Compliance Rule",
@@ -680,6 +724,38 @@ export const TRANSLATIONS = {
     feedbackSuccessMessage: "Your feedback has been submitted successfully.",
     feedbackError: "Could not submit feedback. Please try again.",
     close: "Close",
+    // AccountOverviewPage
+    accountOverviewTitle: "Account Overview",
+    teams: "Teams",
+    teamsDesc: "The teams that are associated with your ArmorOps account.",
+    searchTeamPlaceholder: "Search for a team...",
+    userProjects: (name: string) => `${name}'s projects`,
+    hobby: "Hobby",
+    owner: "Owner",
+    domains: "Domains",
+    noDomainsFound: "No domains found.",
+    // AccountActivityPage
+    accountActivityTitle: "Account Activity",
+    loadingActivity: "Loading activity...",
+    noActivityFound: "No recent activity found.",
+    you: "You",
+    loggedInWithEmail: "logged in with email",
+    loggedInViaGoogle: "logged in via Google",
+    // AccountSettingsPage
+    accountSettingsTitle: "Account Settings",
+    avatar: "Avatar",
+    avatarDesc: "This is your avatar.",
+    avatarUploadHint: "Click on the avatar to upload a custom one from your files.",
+    avatarOptional: "An avatar is optional but strongly recommended.",
+    displayName: "Display Name",
+    displayNameHint: "Please use 32 characters at maximum.",
+    saveSuccess: "Successfully saved!",
+    saveError: "Failed to update profile. Please try again.",
+    // Fix: Renamed to avoid duplicate key error.
+    savingProfile: "Saving...",
+    save: "Save",
+    emailAddress: "Email Address",
+    emailHint: "Your email address cannot be changed.",
   }
 };
 
