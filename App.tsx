@@ -16,6 +16,7 @@ import AboutPage from './pages/AboutPage';
 import AuthPage from './pages/AuthPage';
 import AutoFixAgentPage from './pages/AutoFixAgentPage';
 import AccountPage from './pages/AccountPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 type Tab = 'home' | 'analyzer' | 'rules' | 'admin' | 'about' | 'auth' | 'autofix' | 'account-overview' | 'account-activity' | 'account-settings';
 
@@ -153,13 +154,13 @@ const App: React.FC = () => {
       case 'admin':
         return user ? <AdminPage T={T} lang={lang} user={user} /> : <AuthPage onAuthSuccess={() => setActiveTab('admin')} T={T} />;
       case 'about':
-        return <AboutPage T={T} />;
+        return <AboutPage T={T} lang={lang} />;
       case 'autofix':
         return <AutoFixAgentPage T={T} user={user} />;
       case 'auth':
         return <AuthPage onAuthSuccess={() => setActiveTab('analyzer')} T={T} />;
       default:
-        return <LandingPage onNavigate={() => handleNavigate('analyzer')} T={T} />;
+        return <NotFoundPage T={T} onNavigateHome={() => handleNavigate('home')} />;
     }
   };
 
@@ -170,7 +171,7 @@ const App: React.FC = () => {
       <header className={`${isAccountPage ? 'bg-black/80' : 'bg-gray-950/70'} backdrop-blur-lg sticky top-0 z-40 border-b ${isAccountPage ? 'border-gray-800' : 'border-white/10'} shadow-lg shadow-black/10`}>
         <nav className="container mx-auto px-4 lg:px-6 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavigate('home')}>
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" alt="ArmorOps Logo" className="h-9 w-auto" />
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s64-rw/logo.webp" alt="ArmorOps Logo" className="h-9 w-auto" />
             <span className="text-xl font-bold text-white tracking-wide">{T.appName}</span>
           </div>
           <div className="hidden md:flex items-center gap-2">
@@ -303,7 +304,7 @@ const App: React.FC = () => {
                 {/* Branding/Intro Column */}
                 <div className="lg:col-span-1">
                     <div className="flex items-center gap-3 mb-4">
-                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" alt="ArmorOps Logo" className="h-9 w-auto" />
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s64-rw/logo.webp" alt="ArmorOps Logo" className="h-9 w-auto" />
                         <span className="text-xl font-bold text-white tracking-wide">{T.appName}</span>
                     </div>
                     <p className="text-sm text-gray-400 leading-relaxed mb-4">

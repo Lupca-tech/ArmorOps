@@ -304,7 +304,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
                     <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-full blur-3xl opacity-20"></div>
                     <div className="relative p-2 bg-gray-900/50 rounded-xl border border-white/10 shadow-2xl">
                         <img 
-                            src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNs9_-qBn3rpUEhrj-K5Lfi4czvBQLZTWx0jV-eNHJG9rm8q_1Ke4HmD906DlN4GhUBjw5NWmNAi4IjdmPKtxCpGSH5ohfAH0-dy3KVP1obzqdvCtiyKjOJqYTcMnzuoJxd6X5dgyYtsorP5pFKrKrQaMvvKjO3KOF0vjVRjM84tQ8aBbUnC4Sj8oLAVw/s1600/Screenshot%202025-11-10%20165754.png" 
+                            src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNs9_-qBn3rpUEhrj-K5Lfi4czvBQLZTWx0jV-eNHJG9rm8q_1Ke4HmD906DlN4GhUBjw5NWmNAi4IjdmPKtxCpGSH5ohfAH0-dy3KVP1obzqdvCtiyKjOJqYTcMnzuoJxd6X5dgyYtsorP5pFKrKrQaMvvKjO3KOF0vjVRjM84tQ8aBbUnC4Sj8oLAVw/s800-rw/Screenshot%202025-11-10%20165754.webp" 
                             alt="Analysis Results Screenshot" 
                             className="rounded-lg w-full h-auto"
                         />

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" />
+    <link rel="icon" type="image/webp" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s32-rw/logo.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ArmorOps | Auto-Fix & PR Agent</title>
 
@@ -17,24 +17,27 @@
     <meta property="og:url" content="https://armorops.tech/" />
     <meta property="og:title" content="ArmorOps | Auto-Fix & PR Agent" />
     <meta property="og:description" content="ArmorOps: An AI-powered DevSecOps agent that provides context-aware IaC analysis, automated bug fixes, and validated pull requests to enhance your cloud security posture." />
-    <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" />
+    <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1200-rw/logo.webp" />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://armorops.tech/" />
     <meta property="twitter:title" content="ArmorOps | Auto-Fix & PR Agent" />
     <meta property="twitter:description" content="ArmorOps: An AI-powered DevSecOps agent that provides context-aware IaC analysis, automated bug fixes, and validated pull requests to enhance your cloud security posture." />
-    <meta property="twitter:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png" />
+    <meta property="twitter:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1200-rw/logo.webp" />
     <!-- SEO Meta Tags End -->
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
+    
+    <!-- Defer non-critical CSS to prevent render-blocking -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></noscript>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9MPT4BLZEE"></script>
     <script>
@@ -54,7 +57,7 @@
       "operatingSystem": "Web",
       "description": "An AI-powered DevSecOps agent that provides context-aware IaC analysis, automated bug fixes, and validated pull requests to enhance cloud security posture.",
       "url": "https://armorops.tech/",
-      "logo": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1920/logo.png",
+      "logo": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7bwXvRLw1W1pC4ELStNRzdFy9np5GySTIL61wkMIsRD9Axbq4mIvcwAebK_U-V3Tpp6v9tAC3n0NdudSXEryvP3qvXnjFH_K7xaeJ4z6BO89H9RBujmBI993EYZA-eIdONsqs6lh4Mu0WT6DV35Q_rH0PHsS784zVEF_oN54GDfKKPavZ3RdmcA65mTA/s1200-rw/logo.webp",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -198,6 +201,7 @@
     animation: shine 5s infinite;
   }
 </style>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-gray-950 text-gray-50">
     <div id="root"></div>
@@ -207,6 +211,6 @@
         document.body.style.setProperty('--mouse-y', e.clientY + 'px');
       });
     </script>
-  <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

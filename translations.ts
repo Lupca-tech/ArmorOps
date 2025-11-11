@@ -382,6 +382,11 @@ export const TRANSLATIONS = {
     save: "Lưu",
     emailAddress: "Địa chỉ Email",
     emailHint: "Địa chỉ email của bạn không thể thay đổi.",
+    // 404 Page
+    notFoundTitle: "Không tìm thấy",
+    notFoundSubtitle: "Trang bạn đang tìm kiếm không tồn tại.",
+    notFoundMessage: "Có vẻ như bạn đã đi vào một con đường không xác định. Đừng lo, chúng tôi sẽ giúp bạn quay trở lại.",
+    notFoundButton: "Về Trang chủ",
   },
   en: {
     // App.tsx
@@ -766,6 +771,11 @@ export const TRANSLATIONS = {
     save: "Save",
     emailAddress: "Email Address",
     emailHint: "Your email address cannot be changed.",
+    // 404 Page
+    notFoundTitle: "Page Not Found",
+    notFoundSubtitle: "The page you're looking for doesn't exist.",
+    notFoundMessage: "It looks like you've taken a wrong turn. Don't worry, we'll get you back on track.",
+    notFoundButton: "Go Home",
   }
 };
 
