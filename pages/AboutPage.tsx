@@ -157,6 +157,75 @@ const LatestBlogPosts: React.FC<{ T: Translation, lang: Language }> = ({ T, lang
   );
 }
 
+const CommunitySection: React.FC<{ T: Translation }> = ({ T }) => {
+    const communityPlatforms = [
+        {
+            name: T.communityYouTubeTitle,
+            description: T.communityYouTubeDesc,
+            cta: T.communityYouTubeCTA,
+            imgSrc: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4sE2QkinhrcJDL6IRD05Q_9PnCrgVxXEdDqlW8Osu5T1ZFho7cqRYL6H6i7ln4Xln-xVqyoXqIhC40jnkwOO-E7nfquYAGlofHAgiUQwBBasIYvPSFEawX1QC_cFeehTglBQuafS0x5A0ykINXv6UDvuMLo3g5jUOdefcqupublj7EoIauFB5f7ymhs4/s1600/Screenshot%202025-11-11%20144108.png",
+            link: "https://youtube.com/@devsecopsstory",
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 16 16"><path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.188-.009 1.043-.074 1.957l-.008.104-.022.26-.01.104c-.048.519-.119 1.023-.22 1.402a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.8 99.8 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408z"/></svg>
+        },
+        {
+            name: T.communityTikTokTitle,
+            description: T.communityTikTokDesc,
+            cta: T.communityTikTokCTA,
+            imgSrc: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhz_38SPItnukzxQpeSriX3pMZBOrSz2X9WGtOqqm2QS-akfDG4KH_u7vxOlJiMjTUVuJkElAfsRTddem6M_9LolK-Qbkwh6qUE9JfNmM37M8yRETLhhhMJbnsJUxlZ9zjFsnVVkg8hj67vGKF7Meh22V-uNYed1x8Ucwr0LeyONg_-F72YvBt8EvhZQ_4/s1600/Screenshot%202025-11-11%20144337.png",
+            link: "https://www.tiktok.com/@devsecopsstory",
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 16 16"><path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3V0Z"/></svg>
+        },
+        {
+            name: T.communityFacebookTitle,
+            description: T.communityFacebookDesc,
+            cta: T.communityFacebookCTA,
+            imgSrc: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtma3Coe81DOyEBZ2n67Brb4O83igdHgOdx2-feoCXVxQ1ouiQQXWi8HL56mbBQpdMq9Ih1XVb2rmuNTI2FFrxW9EGlpCQ92D7_Qi4WC8bb581S8EkaDggkB4wEr5NJfhGhYYcWUvhW3ZXZknnex7eb2BgLctlfPSMJZnFIhqXh79kNUKrMab7F3Om6oY/s320/Blue%20Purple%20Orange%20Cartoon%20Playful%20Web%20Software%20Development%20Announcement%20Ba_20251015_205700_0000.jpg",
+            link: "https://m.facebook.com/@devsecopsstory",
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg>
+        }
+    ];
+
+    return (
+        <section className="py-20 px-4 bg-gray-950/50">
+            <div className="container mx-auto">
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-3xl font-bold text-white mb-4">{T.communitySectionTitle}</h2>
+                    <p className="text-gray-400 mb-12">{T.communitySectionSubtitle}</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    {communityPlatforms.map((platform, index) => (
+                        <a
+                            key={index}
+                            href={platform.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative block overflow-hidden rounded-xl border border-gray-800 transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-500/50"
+                        >
+                            <img
+                                src={platform.imgSrc}
+                                alt={`${platform.name} preview`}
+                                className="w-full h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                            <div className="absolute bottom-0 left-0 p-6 text-white w-full">
+                                <div className="flex items-center gap-3 mb-2">
+                                    {platform.icon}
+                                    <h3 className="text-xl font-bold">{platform.name}</h3>
+                                </div>
+                                <p className="text-sm text-gray-300 mb-4">{platform.description}</p>
+                                <div className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-600 group-hover:bg-cyan-500 transition-colors">
+                                    {platform.cta}
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
 
 const AboutPage: React.FC<AboutPageProps> = ({ T, lang }) => {
   return (
@@ -248,6 +317,9 @@ const AboutPage: React.FC<AboutPageProps> = ({ T, lang }) => {
       
       {/* Latest Blog Posts Section */}
       <LatestBlogPosts T={T} lang={lang} />
+      
+      {/* Community Section */}
+      <CommunitySection T={T} />
     </div>
   );
 };
