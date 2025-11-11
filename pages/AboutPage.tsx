@@ -1,8 +1,9 @@
-import React from 'react';
-import { Translation } from '../translations';
+import React, { useState, useEffect } from 'react';
+import { Translation, Language } from '../translations';
 
 interface AboutPageProps {
   T: Translation;
+  lang: Language;
 }
 
 const PainPointCard: React.FC<{ title: string, children: React.ReactNode }> = ({ title, children }) => (
@@ -27,8 +28,137 @@ const DataVizCard: React.FC<{ icon: React.ReactNode, title: string, value: strin
   </div>
 );
 
+// --- New Component for Blog Posts ---
+interface Post {
+  title: string;
+  link: string;
+  summary: string;
+  publishedDate: string;
+}
 
-const AboutPage: React.FC<AboutPageProps> = ({ T }) => {
+const LatestBlogPosts: React.FC<{ T: Translation, lang: Language }> = ({ T, lang }) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        // Use a CORS-friendly RSS-to-JSON service to avoid "Failed to fetch" errors.
+        const rssUrl = 'https://www.devsecopsstory.com/feeds/posts/default';
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+        
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (data.status !== 'ok') {
+          throw new Error('Failed to parse RSS feed via proxy.');
+        }
+
+        const fetchedPosts: Post[] = data.items.slice(0, 3).map((item: any) => {
+          // The description from rss2json is HTML, so we clean it for a plain text summary.
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = item.description;
+          const summary = (tempDiv.textContent || tempDiv.innerText || "").substring(0, 120) + '...';
+
+          return {
+            title: item.title,
+            link: item.link,
+            summary: summary,
+            publishedDate: item.pubDate,
+          };
+        });
+        
+        setPosts(fetchedPosts);
+
+      } catch (e) {
+        console.error("Failed to fetch blog posts:", e);
+        setError(T.blogCtaError);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [T.blogCtaError]);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(lang, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const SkeletonCard = () => (
+    <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700 animate-pulse">
+      <div className="h-4 bg-gray-700 rounded w-3/4 mb-4"></div>
+      <div className="h-3 bg-gray-700 rounded w-1/2 mb-6"></div>
+      <div className="h-3 bg-gray-700 rounded w-full mb-2"></div>
+      <div className="h-3 bg-gray-700 rounded w-full mb-2"></div>
+      <div className="h-3 bg-gray-700 rounded w-5/6"></div>
+    </div>
+  );
+
+  return (
+    <section className="py-20 px-4 bg-gray-900/50">
+        <div className="container mx-auto">
+            <div className="text-center max-w-3xl mx-auto">
+                <h2 className="text-3xl font-bold text-white mb-4">{T.blogCtaTitle}</h2>
+                <p className="text-gray-400 mb-12">{T.blogCtaDesc}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {isLoading ? (
+                    <>
+                        <SkeletonCard />
+                        <SkeletonCard />
+                        <SkeletonCard />
+                    </>
+                ) : error ? (
+                    <div className="col-span-full text-center bg-red-900/50 border border-red-700 text-red-300 px-4 py-6 rounded-md">
+                        <p>{error}</p>
+                         <a href="https://www.devsecopsstory.com/" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block px-6 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors">
+                            Visit Blog
+                        </a>
+                    </div>
+                ) : (
+                    posts.map((post, index) => (
+                        <a 
+                            key={index} 
+                            href={post.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="block bg-gray-800/50 p-6 rounded-lg border border-gray-700 transition-all duration-300 hover:border-cyan-500/50 hover:-translate-y-2 hover:shadow-lg hover:shadow-cyan-900/50 group"
+                        >
+                            <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-cyan-400 transition-colors">{post.title}</h3>
+                            <p className="text-xs text-gray-500 mb-4">{T.publishedOn} {formatDate(post.publishedDate)}</p>
+                            <p className="text-sm text-gray-400 flex-grow">{post.summary}</p>
+                        </a>
+                    ))
+                )}
+            </div>
+
+            <div className="text-center mt-16">
+                 <a 
+                    href="https://www.devsecopsstory.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-block px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate-pulse-shadow"
+                 >
+                    {T.blogCtaButton}
+                </a>
+            </div>
+        </div>
+    </section>
+  );
+}
+
+
+const AboutPage: React.FC<AboutPageProps> = ({ T, lang }) => {
   return (
     <div className="animate-fade-in-up">
       {/* Hero Section */}
@@ -115,6 +245,9 @@ const AboutPage: React.FC<AboutPageProps> = ({ T }) => {
           </div>
         </div>
       </section>
+      
+      {/* Latest Blog Posts Section */}
+      <LatestBlogPosts T={T} lang={lang} />
     </div>
   );
 };

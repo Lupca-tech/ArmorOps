@@ -312,6 +312,11 @@ export const TRANSLATIONS = {
     viz1Desc: "Độ tin cậy là bảo mật. Hệ thống tự động của chúng tôi đảm bảo dịch vụ của bạn luôn kiên cường và sẵn sàng.",
     viz2Title: "Giảm 80% Gánh nặng",
     viz2Desc: "Chúng tôi xử lý gánh nặng bảo mật, giải phóng đội ngũ kỹ sư của bạn để tập trung vào việc xây dựng các sản phẩm tuyệt vời.",
+    blogCtaTitle: "Bài viết Mới nhất từ Blog của chúng tôi",
+    blogCtaDesc: "Luôn cập nhật các xu hướng, insight và kiến thức mới nhất trong lĩnh vực DevSecOps.",
+    blogCtaButton: "Khám phá tất cả Bài viết",
+    blogCtaError: "Không thể tải bài viết. Vui lòng ghé thăm blog của chúng tôi trực tiếp.",
+    publishedOn: "Đăng ngày",
     // AutoFixAgentPage.tsx
     autoFixHeroTitle: "Sửa lỗi Tự động",
     autoFixHeroSubheading: "và các Pull Request đã được Xác thực.",
@@ -691,6 +696,11 @@ export const TRANSLATIONS = {
     viz1Desc: "Reliability is security. Our automated systems ensure your services remain resilient and available.",
     viz2Title: "80% Burden Reduction",
     viz2Desc: "We handle the security overhead, freeing up your engineering team to focus on building great products.",
+    blogCtaTitle: "Latest Insights from Our Blog",
+    blogCtaDesc: "Stay updated with the latest trends, insights, and knowledge in the DevSecOps space.",
+    blogCtaButton: "Explore All Articles",
+    blogCtaError: "Could not load articles. Please visit our blog directly.",
+    publishedOn: "Published on",
      // AutoFixAgentPage.tsx
     autoFixHeroTitle: "Automated Bug Fixes",
     autoFixHeroSubheading: "and Validated Pull Requests.",
