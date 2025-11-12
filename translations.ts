@@ -222,6 +222,7 @@ export const TRANSLATIONS = {
     jsonInstructionsDesc: "Tệp phải là một mảng JSON. Mỗi đối tượng trong mảng phải có các khóa sau:",
     // PublicRulesPage.tsx
     publicRulesTitle: "Khám phá Cơ sở Tri thức Tuân thủ",
+    publicRulesNotice: "Lưu ý: Đây là bộ quy tắc bảo mật chung được cung cấp bởi quản trị viên. Bạn có thể duyệt, tìm kiếm, và sử dụng chúng làm tài liệu tham khảo trong các phân tích của mình.",
     searchPlaceholder: "Tìm kiếm quy tắc, danh mục, hoặc từ khóa...",
     searchButton: "Tìm kiếm",
     noRulesFound: "Không tìm thấy quy tắc nào khớp với tìm kiếm của bạn.",
@@ -622,6 +623,7 @@ export const TRANSLATIONS = {
     jsonInstructionsDesc: "The file must be a JSON array. Each object in the array must have the following keys:",
     // PublicRulesPage.tsx
     publicRulesTitle: "Explore the Compliance Knowledge Base",
+    publicRulesNotice: "Note: This is a general set of security rules provided by the administrator. You can browse, search, and use them as a reference in your analyses.",
     searchPlaceholder: "Search for rules, categories, or keywords...",
     searchButton: "Search",
     noRulesFound: "No rules found matching your search.",

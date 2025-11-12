@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase';
 import { ComplianceChunk, IndexedChunk, TfidfVectorizer, createTfidfVectorizer, calculateTfIdfVectors, retrieveContext } from '../services/ragData';
@@ -223,6 +222,17 @@ const PublicRulesPage: React.FC<PublicRulesPageProps> = ({ T, user, isAuthReady,
                 <h2 className="text-3xl lg:text-4xl font-bold text-white mb-2">{T.publicRulesTitle}</h2>
                 <p className="text-gray-400 max-w-2xl mx-auto">{T.publicRulesCTA}</p>
             </header>
+
+            <div className="mb-8 p-4 bg-gray-800/50 rounded-lg border border-l-4 border-l-cyan-500 border-gray-700 flex items-start gap-3">
+                <div className="flex-shrink-0 pt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p className="text-sm text-gray-300">
+                    {T.publicRulesNotice}
+                </p>
+            </div>
 
             <div className="flex flex-col lg:flex-row lg:items-start gap-8">
                 {/* Sidebar */}
