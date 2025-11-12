@@ -591,11 +591,11 @@ ${vulnerabilitiesSection}
 
         return (
             <>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="md:col-span-1 h-full">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+                    <div className="md:col-span-2 h-full">
                         <ScoreReport result={result} timestamp={timestamp} T={T} />
                     </div>
-                    <div className="md:col-span-2 flex flex-col gap-6">
+                    <div className="md:col-span-3 flex flex-col gap-6">
                         {result.vulnerabilities.length > 0 ? (
                             <RiskSummaryChart vulnerabilities={result.vulnerabilities} T={T} />
                         ) : (
