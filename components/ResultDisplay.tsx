@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Vulnerability, AnalysisResult, RiskFactor, SystemScope } from '../types';
 import { Translation } from '../translations';
@@ -345,6 +346,12 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, scope, timestamp,
     const [activeFilter, setActiveFilter] = useState<FilterLevel>('All');
 
     const handleRemediateClick = (vulnerability: Vulnerability) => {
+        if (typeof (window as any).gtag === 'function') {
+            (window as any).gtag('event', 'click_remediate', {
+                'event_category': 'conversion',
+                'event_label': vulnerability.violatedRule,
+            });
+        }
         setSelectedVulnerability(vulnerability);
         onStartRemediation(vulnerability);
     }
@@ -381,6 +388,12 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, scope, timestamp,
     }, [result, activeFilter]);
     
     const handleDownloadReport = () => {
+        if (typeof (window as any).gtag === 'function') {
+            (window as any).gtag('event', 'download_report', {
+                'event_category': 'engagement',
+                'event_label': 'markdown_report'
+            });
+        }
         if (!result) return;
 
         const getRiskLevelFromScore = (score: number) => {

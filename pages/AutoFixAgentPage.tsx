@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Translation } from '../translations';
 import { db } from '../services/firebase';
@@ -125,6 +126,12 @@ const AutoFixAgentPage: React.FC<AutoFixAgentPageProps> = ({ T, user }) => {
                 userEmail: user ? user.email : 'anonymous',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             });
+            if (typeof (window as any).gtag === 'function') {
+                (window as any).gtag('event', 'submit_form', {
+                    'event_category': 'conversion',
+                    'event_label': 'early_access_signup',
+                });
+            }
             setSubmitted(true);
         } catch (error) {
             console.error("Error submitting early access form:", error);

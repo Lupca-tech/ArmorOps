@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { Translation } from '../translations';
 
@@ -160,6 +161,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
     };
   }, []);
 
+  const handleNavigateWithTracking = (label: string) => {
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'click_cta', {
+        'event_category': 'conversion',
+        'event_label': label,
+      });
+    }
+    onNavigate();
+  };
 
   return (
     <div className="overflow-x-clip">
@@ -177,7 +187,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
             {T.landingSubtitle}
           </p>
           <button
-            onClick={onNavigate}
+            onClick={() => handleNavigateWithTracking('landing_hero')}
             className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow shine-effect"
           >
             {T.landingCTA}
@@ -325,7 +335,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, T }) => {
             {T.finalCtaDesc}
           </p>
           <button
-            onClick={onNavigate}
+            onClick={() => handleNavigateWithTracking('landing_final')}
             className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate__animated animate__fadeInUp animate__delay-1s animate-pulse-shadow shine-effect"
           >
             {T.finalCtaButton}

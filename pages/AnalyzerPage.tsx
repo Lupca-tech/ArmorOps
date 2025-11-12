@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { SystemScope, Vulnerability, AnalysisSession, AnalysisResult } from '../types';
 import InputForm, { InputMode } from '../components/InputForm';
@@ -410,6 +411,12 @@ const AnalyzerPage: React.FC<AnalyzerPageProps> = ({ T, lang, user, isAuthReady 
   };
 
   const handleLoadSession = useCallback((sessionId: string) => {
+    if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'load_history_session', {
+            'event_category': 'engagement',
+            'event_label': sessionId
+        });
+    }
     const session = analysisHistory.find(s => s.id === sessionId);
     if (session) {
         const loadedScope = session.scope;
@@ -472,6 +479,13 @@ const AnalyzerPage: React.FC<AnalyzerPageProps> = ({ T, lang, user, isAuthReady 
         page: 'AnalyzerPage',
         userAgent: navigator.userAgent
       });
+
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'submit_feedback', {
+            'event_category': 'feedback',
+            'event_label': 'analyzer_page'
+        });
+      }
 
       setFeedbackStatus('success');
       setTimeout(() => {

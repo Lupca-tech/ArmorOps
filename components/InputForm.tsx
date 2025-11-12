@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { SystemScope, SystemEnvironment, DataSensitivity, ComplianceFramework } from '../types';
 import { Translation } from '../translations';
@@ -226,6 +227,18 @@ const InputForm: React.FC<InputFormProps> = ({
   );
 
   const isAnalyzeDisabled = isLoading || (inputMode === 'paste' ? iacCode.trim() === '' : files.length === 0) || scope.environments.length === 0 || scope.dataSensitivities.length === 0;
+  
+  const handleAnalyzeClick = () => {
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'start_analysis', {
+        'event_category': 'engagement',
+        'event_label': inputMode,
+        'value': inputMode === 'paste' ? iacCode.length : files.length
+      });
+    }
+    onAnalyze();
+  };
+
   const analyzeButtonText = () => {
     if (isLoading) return T.analyzing;
     if (inputMode === 'upload') {
@@ -400,7 +413,7 @@ const InputForm: React.FC<InputFormProps> = ({
 
 
       <button
-        onClick={isLoading ? onCancel : onAnalyze}
+        onClick={isLoading ? onCancel : handleAnalyzeClick}
         disabled={!isLoading && isAnalyzeDisabled}
         className={`mt-6 w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors ${
           isLoading

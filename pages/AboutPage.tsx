@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Translation, Language } from '../translations';
 
@@ -147,6 +148,14 @@ const LatestBlogPosts: React.FC<{ T: Translation, lang: Language }> = ({ T, lang
                     href="https://www.devsecopsstory.com/" 
                     target="_blank" 
                     rel="noopener noreferrer" 
+                    onClick={() => {
+                      if (typeof (window as any).gtag === 'function') {
+                        (window as any).gtag('event', 'click_outbound', {
+                          'event_category': 'outbound',
+                          'event_label': 'about_page_blog_cta',
+                        });
+                      }
+                    }}
                     className="inline-block px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 text-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50 animate-pulse-shadow"
                  >
                     {T.blogCtaButton}
@@ -165,7 +174,7 @@ const CommunitySection: React.FC<{ T: Translation }> = ({ T }) => {
             cta: T.communityYouTubeCTA,
             imgSrc: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4sE2QkinhrcJDL6IRD05Q_9PnCrgVxXEdDqlW8Osu5T1ZFho7cqRYL6H6i7ln4Xln-xVqyoXqIhC40jnkwOO-E7nfquYAGlofHAgiUQwBBasIYvPSFEawX1QC_cFeehTglBQuafS0x5A0ykINXv6UDvuMLo3g5jUOdefcqupublj7EoIauFB5f7ymhs4/s1600/Screenshot%202025-11-11%20144108.png",
             link: "https://youtube.com/@devsecopsstory",
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 16 16"><path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.188-.009 1.043-.074 1.957l-.008.104-.022.26-.01.104c-.048.519-.119 1.023-.22 1.402a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.8 99.8 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408z"/></svg>
+            icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 16 16"><path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.188-.009 1.043-.074 1.957l-.008.104-.022.26-.01.104c-.048.519-.119 1.023-.22 1.402a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.8 99.8 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408z"/></svg>
         },
         {
             name: T.communityTikTokTitle,
@@ -199,6 +208,14 @@ const CommunitySection: React.FC<{ T: Translation }> = ({ T }) => {
                             href={platform.link}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => {
+                              if (typeof (window as any).gtag === 'function') {
+                                (window as any).gtag('event', 'click_outbound', {
+                                  'event_category': 'outbound',
+                                  'event_label': `about_page_community_${platform.name.toLowerCase().replace(/ /g, '_')}`,
+                                });
+                              }
+                            }}
                             className="group relative block overflow-hidden rounded-xl border border-gray-800 transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-500/50"
                         >
                             <img

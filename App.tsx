@@ -22,12 +22,13 @@ type Tab = 'home' | 'analyzer' | 'rules' | 'admin' | 'about' | 'auth' | 'autofix
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('vi');
-  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [activeTab, setActiveTab] = useState<string>('home');
   const [user, setUser] = useState<firebase.User | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -40,6 +41,7 @@ const App: React.FC = () => {
 
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
   useEffect(() => {
     // Scroll to top whenever the active tab changes to simulate page navigation
     window.scrollTo(0, 0);
@@ -80,13 +82,15 @@ const App: React.FC = () => {
       } else {
           // Clear the session flag on logout
           sessionStorage.removeItem('hasLoggedIn');
-      }
-      if (!currentUser && (activeTab === 'admin' || activeTab.startsWith('account-'))) {
-        setActiveTab('home');
+          // On logout, if user is on a protected page, redirect them.
+          const currentHash = window.location.hash.substring(1);
+          if (currentHash === 'admin' || currentHash.startsWith('account-')) {
+              window.location.hash = 'auth';
+          }
       }
     });
     return () => unsubscribe();
-  }, [activeTab]);
+  }, []);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,10 +109,16 @@ const App: React.FC = () => {
   const handleNavigate = (tab: Tab) => {
     setIsMobileMenuOpen(false); // Close mobile menu on navigation
     setIsProfileMenuOpen(false);
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'navigate', {
+        'event_category': 'navigation',
+        'event_label': tab,
+      });
+    }
     if ((tab === 'admin' || tab.startsWith('account-')) && !user) {
-      setActiveTab('auth');
+      window.location.hash = 'auth';
     } else {
-      setActiveTab(tab);
+      window.location.hash = tab;
     }
   };
 
@@ -150,6 +160,15 @@ const App: React.FC = () => {
 
 
   const renderPage = () => {
+    if (!isAuthReady) {
+        return null; // Or a loading spinner
+    }
+
+    const isProtected = activeTab === 'admin' || activeTab.startsWith('account-');
+    if (isProtected && !user) {
+        return <AuthPage onAuthSuccess={() => { window.location.hash = activeTab; }} T={T} />;
+    }
+
     if (activeTab.startsWith('account-') && user) {
         return <AccountPage T={T} lang={lang} user={user} activeTab={activeTab as any} onNavigate={handleNavigate} />;
     }
@@ -162,13 +181,13 @@ const App: React.FC = () => {
       case 'rules':
         return <PublicRulesPage T={T} user={user} isAuthReady={isAuthReady} onNavigate={handleNavigate} />;
       case 'admin':
-        return user ? <AdminPage T={T} lang={lang} user={user} /> : <AuthPage onAuthSuccess={() => setActiveTab('admin')} T={T} />;
+        return <AdminPage T={T} lang={lang} user={user!} />;
       case 'about':
         return <AboutPage T={T} lang={lang} />;
       case 'autofix':
         return <AutoFixAgentPage T={T} user={user} />;
       case 'auth':
-        return <AuthPage onAuthSuccess={() => setActiveTab('analyzer')} T={T} />;
+        return <AuthPage onAuthSuccess={() => handleNavigate('analyzer')} T={T} />;
       default:
         return <NotFoundPage T={T} onNavigateHome={() => handleNavigate('home')} />;
     }
@@ -196,7 +215,16 @@ const App: React.FC = () => {
              <div className="relative">
               <select
                 value={lang}
-                onChange={(e) => setLang(e.target.value as Language)}
+                onChange={(e) => {
+                  const newLang = e.target.value as Language;
+                  setLang(newLang);
+                  if (typeof (window as any).gtag === 'function') {
+                    (window as any).gtag('event', 'change_language', {
+                      'event_category': 'engagement',
+                      'event_label': newLang,
+                    });
+                  }
+                }}
                 aria-label={T.languageSelectorLabel}
                 className="bg-gray-800 border border-gray-700 text-white text-sm rounded-md focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 block w-full pl-3 pr-8 py-1.5 appearance-none"
               >
@@ -367,25 +395,25 @@ const App: React.FC = () => {
                         <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">{T.footerCommunity}</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a href="https://www.devsecopsstory.com/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
+                                <a href="https://www.devsecopsstory.com/" onClick={() => { if (typeof (window as any).gtag === 'function') { (window as any).gtag('event', 'click_outbound', { 'event_category': 'outbound', 'event_label': 'footer_blog' }); } }} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     <span>{T.footerBlog}</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.tiktok.com/@devsecopsstory" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
+                                <a href="https://www.tiktok.com/@devsecopsstory" onClick={() => { if (typeof (window as any).gtag === 'function') { (window as any).gtag('event', 'click_outbound', { 'event_category': 'outbound', 'event_label': 'footer_tiktok' }); } }} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 16 16"><path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3V0Z"/></svg>
                                     <span>TikTok</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://youtube.com/@devsecopsstory" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
+                                <a href="https://youtube.com/@devsecopsstory" onClick={() => { if (typeof (window as any).gtag === 'function') { (window as any).gtag('event', 'click_outbound', { 'event_category': 'outbound', 'event_label': 'footer_youtube' }); } }} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 16 16"><path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.188-.009 1.043-.074 1.957l-.008.104-.022.26-.01.104c-.048.519-.119 1.023-.22 1.402a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.8 99.8 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408z"/></svg>
                                     <span>YouTube</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://m.facebook.com/@devsecopsstory" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
+                                <a href="https://m.facebook.com/@devsecopsstory" onClick={() => { if (typeof (window as any).gtag === 'function') { (window as any).gtag('event', 'click_outbound', { 'event_category': 'outbound', 'event_label': 'footer_facebook' }); } }} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-transform duration-300 inline-flex items-center gap-2 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg>
                                     <span>Facebook</span>
                                 </a>

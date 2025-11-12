@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { auth } from '../services/firebase';
 // Fix: Import firebase v9 compat to resolve module export errors for auth functions and types.
@@ -155,9 +156,15 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
       if (isLogin) {
         // Fix: Use auth.signInWithEmailAndPassword from the compat library.
         await auth.signInWithEmailAndPassword(email, password);
+        if (typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'login', { 'method': 'Email' });
+        }
       } else {
         // Fix: Use auth.createUserWithEmailAndPassword from the compat library.
         await auth.createUserWithEmailAndPassword(email, password);
+        if (typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'sign_up', { 'method': 'Email' });
+        }
       }
       onAuthSuccess();
     } catch (err) {
@@ -190,6 +197,9 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, T }) => {
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
       await auth.signInWithPopup(provider);
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'login', { 'method': 'Google' });
+      }
       onAuthSuccess();
     } catch (err) {
       const authError = err as firebase.auth.AuthError;

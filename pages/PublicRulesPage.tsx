@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase';
 import { ComplianceChunk, IndexedChunk, TfidfVectorizer, createTfidfVectorizer, calculateTfIdfVectors, retrieveContext } from '../services/ragData';
@@ -76,6 +77,10 @@ const PublicRulesPage: React.FC<PublicRulesPageProps> = ({ T, user, isAuthReady,
             return;
         }
         
+        if (typeof (window as any).gtag === 'function') {
+            (window as any).gtag('event', 'search', { 'search_term': searchQuery });
+        }
+
         const results = retrieveContext(searchQuery, ragIndex.indexedChunks, ragIndex.vectorizer, 50); // get top 50
         setSearchResults(results);
         setSubmittedQuery(searchQuery);
@@ -268,7 +273,15 @@ const PublicRulesPage: React.FC<PublicRulesPageProps> = ({ T, user, isAuthReady,
                                 <h3 className="font-semibold text-cyan-300">{T.rulesCtaTitle}</h3>
                                 <p className="text-xs text-gray-300 mt-1">{T.rulesCtaDesc}</p>
                                 <button
-                                    onClick={() => onNavigate('auth')}
+                                    onClick={() => {
+                                      if (typeof (window as any).gtag === 'function') {
+                                        (window as any).gtag('event', 'click_cta', {
+                                          'event_category': 'conversion',
+                                          'event_label': 'rules_page_signup_cta',
+                                        });
+                                      }
+                                      onNavigate('auth');
+                                    }}
                                     className="mt-3 w-full px-4 py-2 text-xs font-medium rounded-md transition-transform transform hover:scale-105 bg-cyan-600 text-white hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                                 >
                                     {T.rulesCtaButton}
